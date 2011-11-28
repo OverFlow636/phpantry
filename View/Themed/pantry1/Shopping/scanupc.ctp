@@ -1,5 +1,9 @@
 <?php
 
+echo '<center><h4>Scanning groceries here will add the item to inventory. <br />
+	If the item does not exist you will be asked to enter its details.<br />
+	Inventory qantity is incremented, and servings are updated based on the items serving_count.</h4></center>';
+
 echo $this->Form->create('Shopping', array(
 	'action'=>'scanGroceries',
 	'inputDefaults'=>array(

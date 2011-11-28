@@ -13,15 +13,32 @@ class RecipesController extends AppController
 			array(
 				'title'=>'New Recipe',
 				'array'=>array('action'=>'add')
+			),
+			array(
+				'title'=>'What can i make?',
+				'array'=>array('action'=>'index', 'available')
 			)
 	));
 
 	/**
 	 * Index function sets $recipes to a paginated list of all recipes in the database
 	 */
-	function index()
+	function index($what = 'all')
 	{
-		$this->set('recipes', $this->paginate());
+
+		switch($what)
+		{
+			case 'all':
+				$recipes = $this->paginate();
+			break;
+
+			case 'available':
+				$this->Recipe->recursive = 2;
+				die(pr($this->paginate()));
+			break;
+		}
+
+		$this->set('recipes', $recipes);
 	}
 
 	/**
@@ -43,18 +60,32 @@ class RecipesController extends AppController
 		$this->set('recipe', $this->Recipe->read());
 	}
 
+	/**
+	 * Edit a recipe
+	 *
+	 * @param type $id
+	 */
 	function edit($id=null)
 	{
+		$this->Recipe->id = $id;
+		if (!$this->Recipe->exists())
+			throw new NotFoundException(__('Invalid recipe'));
+
 		if($this->request->isPost())
 		{
 			$this->Recipe->save($this->request->data);
 			$this->redirect(array('action'=>'view', $this->request->data['Recipe']['id']));
 		}
 
-		$this->data = $this->Recipe->read(null, $id);
+		$this->request->data = $this->Recipe->read(null, $id);
 		$this->set('recipeTypes', $this->Recipe->RecipeType->find('list'));
 	}
 
+	/**
+	 * Add new recipe
+	 *
+	 * @return void
+	 */
 	function add()
 	{
 		if($this->request->isPost())

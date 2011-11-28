@@ -18,6 +18,10 @@ class InventoriesController extends AppController
 			array(
 				'title'=>'Add Inventory',
 				'array'=>array('action'=>'add')
+			),
+			array(
+				'title'=>'What can i make?',
+				'array'=>array('controller'=>'Recipes', 'action'=>'index', 'available')
 			)
 		)
 	);

@@ -41,7 +41,8 @@ if (!empty($item['ItemsRecipe']))
 		echo "<td class=style1>".$this->Html->link($recipe['name'], array('controller'=>'Recipes', 'action'=>'view', $recipe['id']))."</td>";
 
 		echo "<td>".$recipeTypes[$recipe['recipe_type_id']]."</td>";
-		echo "<td class=style1>".$this->Html->link($this->Plural->ize($ir['Unit']['name'], $ir['quantity']), array(
+
+		echo "<td class=style1>".$this->Html->link($item['Item']['useUnit']?$this->Plural->ize($ir['Unit']['name'], $ir['quantity']):$ir['quantity'], array(
 			'controller'=>'ItemsRecipes',
 			'action'=>'edititem2recipe',
 			$ir['id']

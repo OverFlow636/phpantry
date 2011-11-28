@@ -41,7 +41,10 @@ if (!empty($recipe['ItemsRecipe']))
 			$ir['id']
 		))."</td>";
 
-		echo "<td>".$this->Plural->ize($ir['Unit']['name'], $ir['quantity'], false).'</td>';
+		if ($ir['Item']['useUnit'])
+			echo "<td>".$this->Plural->ize($ir['Unit']['name'], $ir['quantity'], false).'</td>';
+		else
+			echo '<td></td>';
 
 		echo "<td class=style1>".$this->Html->link($item['name'], array('controller'=>'Items', 'action'=>'view', $item['id']))."</td>";
 

@@ -3,9 +3,9 @@
 </div>
 <table class=listing>
 	<tr>
-		<th><?php echo $this->Paginator->sort('Name', 'name'); ?></th>
-		<th><?php echo $this->Paginator->sort('Type', 'price'); ?></th>
-		<th><?php echo $this->Paginator->sort('Price', 'package_quantity'); ?></th>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Price</th>
 	</tr>
 
 	<?php
