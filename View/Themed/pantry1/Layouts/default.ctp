@@ -36,8 +36,8 @@
 		</div>
     </div>
 
-	<div id="sql_debug" style="display:none">
-		<?php echo $this->element('sql_dump'); ?>
-	</div>
+	<!-- div id="sql_debug" style="display:none">
+		<?php //echo $this->element('sql_dump'); ?>
+	</div -->
 </body>
 </html>

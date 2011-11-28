@@ -1,11 +1,15 @@
 <?php
 
-App::uses('Controller', 'Controller');
+/**
+ * All related functions for items.
+ *
+ * Items are an individual purchaseable unit. Ex: 'loaf of bread' or 'jar of pb'
+ */
 class ItemsController extends AppController
 {
-	var $name = 'Items';
+	public $name = 'Items';
 
-	var $acp = array(
+	public $acp = array(
 		'links'=>array(
 			array(
 				'title'=>'Packages',
@@ -25,76 +29,149 @@ class ItemsController extends AppController
 		)
 	);
 
+	/**
+	 * Index method sets items to a paginated list of all items in database
+	 *
+	 * @return void
+	 */
 	function index()
 	{
-		$this->data = $this->paginate();
+		$this->Item->recursive = 0;
+		$this->set('items', $this->paginate());
 	}
 
+	/**
+	 * View function, sets $item to data of item $id
+	 *
+	 * @param type $id
+	 */
 	function view($id)
 	{
+		$this->Item->id = $id;
+		if (!$this->Item->exists())
+			throw new NotFoundException(__('Invalid item'));
+
 		$this->set('recipeTypes', $this->Item->ItemsRecipe->Recipe->RecipeType->find('list'));
+
 		$this->Item->contain(array(
 			'Inventory',
 			'ItemsRecipe.Recipe',
 			'ItemsRecipe.Unit',
 			'Unit'
 		));
-		$this->data = $this->Item->read(null, $id);
+		$this->set('item', $this->Item->read());
 	}
 
+	/**
+	 * Handles adding of an item.
+	 * If called without an arguement it lets you scan a UPC.
+	 *
+	 * @param type $upc UPC of an item to lookup and add
+	 */
 	function add($upc=null)
 	{
-		if ($this->request->isPost())
-		{
-			if (isset($this->request->data['Item']['upc']))
-			{
-				$upc = str_pad(ltrim($this->request->data['Item']['upc'],'0'), 12, '0', STR_PAD_LEFT);
-
-				$exists = $this->Item->findByUpc($upc);
-				if ($exists)
-					$this->redirect(array('action'=>'edit', $exists['Item']['id']));
-
-				unset($this->request->data);
-			}
-		}
-
 		if ($upc==null)
 		{
-			if (isset($this->request->data))
+			if ($this->request->is('post'))
 			{
+				if (!empty($this->request->data['Item']['upc']))
+				{
+					$upc = str_pad(ltrim($this->request->data['Item']['upc'],'0'), 12, '0', STR_PAD_LEFT);
 
+					$exists = $this->Item->findByUpc($upc);
+					if ($exists)
+						$this->redirect(array('action'=>'edit', $exists['Item']['id']));
+					else
+						$this->request->data = array('Item'=>$this->lookup($upc));
+				}
+				elseif (isset($this->request->data['Item']['name']))
+				{
+					$this->Session->setFlash('Successfully added new item.', 'notice_success');
+					$this->Item->save($this->request->data);
+					$this->redirect(array('action'=>'view', $this->Item->getLastInsertID()));
+				}
 			}
-
-			$this->render('scanupc');
+			else
+				$this->render('scanupc');
 		}
 		else
 		{
-			if (isset($this->request->data))
+			if ($this->request->is('post'))
 			{
 				$this->Item->save($this->request->data);
+				$this->Session->setFlash('Successfully added new item.', 'notice_success');
 				$this->redirect(array('action'=>'view', $this->Item->getLastInsertID()));
 			}
 
-			$this->request->data['Item'] = $this->lookup($upc);
+			$upc = str_pad(ltrim($upc,'0'), 12, '0', STR_PAD_LEFT);
+			$exists = $this->Item->findByUpc($upc);
+			if ($exists)
+				$this->redirect(array('action'=>'edit', $exists['Item']['id']));
+
+			$this->request->data = array('Item'=>$this->lookup($upc));
+
 			if (empty($this->request->data['Item']['upc']))
 				$this->request->data['Item']['upc'] = $upc;
 		}
 
-	}
-
-	function edit($id=null)
-	{
-		if ($this->request->isPost())
-		{
-			$this->Item->save($this->request->data);
-			$this->redirect(array('action'=>'view', $this->data['Item']['id']));
-		}
-
-		$this->data = $this->Item->read(null, $id);
 		$this->set('itemTypes', $this->Item->ItemType->find('list'));
+
 		$units = $this->Item->Unit->find('list');
 		$this->set('units', $units);
 		$this->set('servingUnits', $units);
+	}
+
+	/**
+	 * Edit an item
+	 *
+	 * @param type $id
+	 */
+	function edit($id=null)
+	{
+		$this->Item->id = $id;
+		if (!$this->Item->exists())
+			throw new NotFoundException(__('Invalid item'));
+
+		if ($this->request->is('post') || $this->request->is('put'))
+		{
+			$this->Item->save($this->request->data);
+			$this->Session->setFlash('Item edited successfully', 'notice_success');
+			$this->redirect(array('action'=>'view', $this->data['Item']['id']));
+		}
+		else
+		{
+			$this->request->data = $this->Item->read(null, $id);
+
+			$this->data = $this->Item->read(null, $id);
+			$this->set('itemTypes', $this->Item->ItemType->find('list'));
+
+			$units = $this->Item->Unit->find('list');
+			$this->set('units', $units);
+			$this->set('servingUnits', $units);
+		}
+	}
+
+	/**
+	 * Delete an item.
+	 *
+	 * @param type $id
+	 */
+	public function delete($id = null)
+	{
+		if (!$this->request->is('get'))
+			throw new MethodNotAllowedException();
+
+		$this->Item->id = $id;
+		if (!$this->Item->exists())
+			throw new NotFoundException(__('Invalid Item'));
+
+		if ($this->Item->delete())
+		{
+			$this->Session->setFlash('Item deleted', 'notice_success');
+			$this->redirect(array('action'=>'index'));
+		}
+		$this->Session->setFlash('Item was not deleted', 'notice_error');
+		$this->redirect(array('action' => 'index'));
 	}
 
 	private function lookup($upc)

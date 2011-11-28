@@ -11,7 +11,7 @@
 	</tr>
 
 	<?php
-	foreach($this->data as $item)
+	foreach($items as $item)
 	{
 		echo "<tr>";
 
