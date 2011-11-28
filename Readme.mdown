@@ -1,24 +1,24 @@
 # PhPantry
 
-	This project will be used for a tablet I have in my kitchen. The goal for this software is to manage pantry inventory, and allow plotting of recipes in order to generate a shopping list.
+  This project will be used for a tablet I have in my kitchen.
 
 ## Planned Features
 
-	* Add items by barcode, software will lookup information on the item as best as it can
-	* Detailed inventory tracking based on servings, not just 'jars'
-	* Interface for adding groceries quickly one you get home from the store
-	* Mobile interface with checklist integration for while you are at the store
-	* Recipe tracking with price per recipe and price per serving information
-	* Calendar to plot future meals, or view past meals
-	* Create shopping list based on what a recipe requires minus inventory
+  * Add items by barcode, software will lookup information on the item as best as it can
+  * Detailed inventory tracking based on servings, not just 'jars'
+  * Interface for adding groceries quickly one you get home from the store
+  * Mobile interface with checklist integration for while you are at the store
+  * Recipe tracking with price per recipe and price per serving information
+  * Calendar to plot future meals, or view past meals
+  * Create shopping list based on what a recipe requires minus inventory
 
 ## To Install
 
-	* Clone the project into a folder with CakePHP 2.0
-	* Update the database information in Config/database.php
-	* In terminal run 'cake schema create' to fixup your db
-	* While in terminal run 'git submodule init' && 'git submodule update' to get DebugKit loaded
+  * Clone the project into a folder with CakePHP 2.0
+  * Update the database information in Config/database.php
+  * In terminal run 'cake schema create' to fixup your db
+  * While in terminal run 'git submodule init' && 'git submodule update' to get DebugKit loaded
 
 ## DEMO
 
-The most recent version of this code is always hosted at http://pantry.overflow636.com/ check it out if you want to see its progress
+  The most recent version of this code is always hosted at http://pantry.overflow636.com/ check it out if you want to see its progress
