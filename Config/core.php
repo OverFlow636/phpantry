@@ -184,12 +184,12 @@
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi');
+	Configure::write('Security.salt', 'supersecurekkdkkdhkfjjha;klsdfjalksdjf;lkasjdf;lkasjdfkhiewuryqaiuwnbjbi');
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '76859309657453542496749683645');
+	Configure::write('Security.cipherSeed', '11223554797997878946545646565132132312346565489779879879844519911537735537');
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).
@@ -225,7 +225,7 @@
 	Configure::write('Acl.database', 'default');
 
 /**
- * Uncomment this line and correct your server timezone to fix 
+ * Uncomment this line and correct your server timezone to fix
  * any date & time related errors.
  */
 	//date_default_timezone_set('UTC');
