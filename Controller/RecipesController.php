@@ -25,7 +25,6 @@ class RecipesController extends AppController
 	 */
 	function index($what = 'all')
 	{
-
 		switch($what)
 		{
 			case 'all':
@@ -33,12 +32,53 @@ class RecipesController extends AppController
 			break;
 
 			case 'available':
-				$this->Recipe->recursive = 2;
-				die(pr($this->paginate()));
+
+				$this->Recipe->recursive = 0;
+				$avail = $this->Recipe->find('all',array(
+					'joins'=>array(
+						array(
+							'table'=>'items_recipes',
+							'alias'=>'ItemsRecipe',
+							'type'=>'inner',
+							'conditions'=>array(
+								'ItemsRecipe.recipe_id = Recipe.id'
+							)
+						),
+						array(
+							'table'=>'items',
+							'alias'=>'Item',
+							'type'=>'inner',
+							'conditions'=>array(
+								'Item.id = ItemsRecipe.item_id'
+							)
+						),
+						array(
+							'table'=>'inventories',
+							'alias'=>'Inventory',
+							'type'=>'left',
+							'conditions'=>array(
+								'Inventory.item_id = Item.id'
+							)
+						)
+					),
+					'conditions'=>array(
+						//'Inventory.servings >='=>'ItemsRecipe.quantity'
+					),
+					'fields'=>'*'
+				));
+
+				$invalid = array();
+				foreach($avail as $test)
+					if (empty($test['Inventory']['id']))
+						$invalid[] = $test['Recipe']['id'];
+
+				$recipes = $this->paginate(array('Recipe.id NOT'=>array_unique($invalid)));
+
 			break;
 		}
 
 		$this->set('recipes', $recipes);
+		$this->set('what', $what);
 	}
 
 	/**

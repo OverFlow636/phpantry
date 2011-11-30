@@ -127,7 +127,7 @@ a.logo {
 #center-column {
 	float:left;
 	width:900px;
-	background:url(../img/bg-center-column.jpg) top left no-repeat;
+	background:url(/img/bg-center-column.jpg) top left no-repeat;
 	background:-webkit-gradient(
 		linear,
 		left top,
@@ -197,7 +197,7 @@ ul.nav li {
 	}
 ul.nav a {
 	padding:0 0 0 12px;
-	background:url(../img/arrow.gif) no-repeat 0 4px;
+	background:url(/img/arrow.gif) no-repeat 0 4px;
 	}
 ul.nav a:hover {
 	font-weight:bold;

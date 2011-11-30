@@ -13,7 +13,8 @@ class ItemsController extends AppController
 		'links'=>array(
 			array(
 				'title'=>'Packages',
-				'array'=>array('controller'=>'Packages', 'action'=>'index')
+				'array'=>array('controller'=>'Packages', 'action'=>'index'),
+				'main'=>true
 			),array(
 				'title'=>'Item List',
 				'array'=>array('action'=>'index')
@@ -173,6 +174,14 @@ class ItemsController extends AppController
 		$this->Session->setFlash('Item was not deleted', 'notice_error');
 		$this->redirect(array('action' => 'index'));
 	}
+
+
+
+
+
+
+
+
 
 	private function lookup($upc)
 	{

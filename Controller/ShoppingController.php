@@ -10,6 +10,11 @@ class ShoppingController extends AppController
 			array(
 				'title'=>'Scan Groceries',
 				'array'=>array('action'=>'scanGroceries')
+			),
+			array(
+				'title'=>'Shopping Lists',
+				'array'=>array('controller'=>'ShoppingLists', 'action'=>'index'),
+				'main'=>true
 			)
 		)
 	);

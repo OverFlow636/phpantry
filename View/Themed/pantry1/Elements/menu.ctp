@@ -14,10 +14,18 @@ if (!$this->params['plugin'])
 		{
 			$acp = $controller->acp;
 
-			echo '<ul class=nav>';
+			$list1 = $list2 = '';
 			foreach($acp['links'] as $link)
-				echo '<li>'. $this->Html->link($link['title'], $link['array']).'</li>';
-			echo '</ul>';
+				if (!empty($link['main']) && $link['main'])
+					$list1 .= '<li>'. $this->Html->link($link['title'], $link['array']).'</li>';
+				else
+					$list2 .= '<li>'. $this->Html->link($link['title'], $link['array']).'</li>';
+
+			if (!empty($list1))
+				echo '<h3>Pages</h3><ul class=nav>'.$list1.'</ul>';
+
+			if (!empty($list2))
+				echo '<h3>Actions</h3><ul class=nav>'.$list2.'</ul>';
 		}
 	}
 
