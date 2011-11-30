@@ -61,9 +61,6 @@ class RecipesController extends AppController
 							)
 						)
 					),
-					'conditions'=>array(
-						//'Inventory.servings >='=>'ItemsRecipe.quantity'
-					),
 					'fields'=>'*'
 				));
 

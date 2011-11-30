@@ -8,7 +8,6 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller
 {
 	var $viewClass = 'Theme';
-	var $theme = 'pantry1';
 
 	var $helpers = array(
 		'Html', 'Form', 'Session', 'Plural', 'Number', 'Paginator'
@@ -26,4 +25,12 @@ class AppController extends Controller
 	 * @var SessionComponent
 	 */
 	var $Session;
+
+	public function beforeFilter()
+	{
+		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'mobile')
+			$this->theme = 'mobile';
+		else
+			$this->theme = 'pantry1';
+	}
 }
