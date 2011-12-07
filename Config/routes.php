@@ -32,6 +32,7 @@
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 	Router::connect('/shoppings/scanGroceries', array('controller'=>'shopping', 'action'=>'scanGroceries'));
+	Router::connect('/mobile', array('controller' => 'pages', 'action' => 'display', 'mobile'));
 
 /**
  * Load all plugin routes.  See the CakePlugin documentation on

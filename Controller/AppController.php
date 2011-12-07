@@ -14,17 +14,9 @@ class AppController extends Controller
 	);
 
 	var $components = array(
-		'DebugKit.Toolbar',
+		//'DebugKit.Toolbar',
 		'Session'
 	);
-
-	//setup magic vars for netbeans
-
-	/**
-	 *
-	 * @var SessionComponent
-	 */
-	var $Session;
 
 	public function beforeFilter()
 	{
@@ -32,5 +24,12 @@ class AppController extends Controller
 			$this->theme = 'mobile';
 		else
 			$this->theme = 'pantry1';
+	}
+
+	public function constructClasses()
+	{
+		if (empty($this->request->params['prefix']) && $this->request->params['pass'][0] != 'mobile')
+			$this->components[] = 'DebugKit.Toolbar';
+		parent::constructClasses();
 	}
 }

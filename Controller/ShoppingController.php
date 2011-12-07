@@ -71,4 +71,10 @@ class ShoppingController extends AppController
 			}
 		}
 	}
+
+
+	function mobile_index()
+	{
+		
+	}
 }
