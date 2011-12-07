@@ -1,29 +1,4 @@
-<style>
-	.strike
-	{
-		text-decoration: line-through;
-	}
-</style>
-<script type="text/javascript">
-	
-$(document).ready(function () {
-	$("input[type='checkbox']").bind( "change", function(event, ui) {
-		console.log('changed ' + event.target.id + " " + event.target.checked);
-		
-		$.ajax({
-			url: "/ShoppingListItems/updateStatus/" + event.target.id + "/" + event.target.checked,
-			success: function() {
-				if (event.target.checked)
-					$(event.target.labels[0]).addClass('strike');
-				else
-					$(event.target.labels[0]).removeClass('strike');
-			}
-		});
-		
-	});	
-});
-
-</script><?php
+<?php
 //die(pr($shoppingList));
 $content = '<fieldset data-role="controlgroup">';
 
@@ -48,7 +23,31 @@ foreach($shoppingList['ShoppingListItem'] as $item)
 	
 }
 
-$content .= '</fieldset>';
+$content .= '</fieldset>
+<style>
+	.strike
+	{
+		text-decoration: line-through;
+	}
+</style>
+<script type="text/javascript">
+	
+$(document).ready(function () {
+	$("input[type=\'checkbox\']").bind( "change", function(event, ui) {
+		$.ajax({
+			url: "/ShoppingListItems/updateStatus/" + event.target.id + "/" + event.target.checked,
+			success: function() {
+				if (event.target.checked)
+					$(event.target.labels[0]).addClass(\'strike\');
+				else
+					$(event.target.labels[0]).removeClass(\'strike\');
+			}
+		});
+		
+	});	
+});
+
+</script>';
 
 echo $this->element('page', array(
 	'title'=>$shoppingList['ShoppingList']['name'],
