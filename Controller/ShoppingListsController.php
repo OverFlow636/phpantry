@@ -132,7 +132,7 @@ class ShoppingListsController extends AppController
 		$this->set('shoppingLists', $this->paginate());
 	}
 
-	function mobile_view($id = null)
+	function mobile_view($id = null, $allStatuses=false)
 	{
 		$this->ShoppingList->id = $id;
 		if (!$this->ShoppingList->exists())
@@ -145,6 +145,38 @@ class ShoppingListsController extends AppController
 			'ShoppingListItem.Package',
 			'ShoppingListItem.Status'
 		));
-		$this->set('shoppingList', $this->ShoppingList->read(null, $id));
+
+		$sl = $this->ShoppingList->find('first', array(
+			'conditions'=>array(
+				'ShoppingList.id'=>$id
+			)
+		));
+
+		if (!$allStatuses)
+		foreach($sl['ShoppingListItem'] as $idx => $sli)
+			if ($sli['Status']['id'] == 3)
+				unset($sl['ShoppingListItem'][$idx]);
+		$this->set('all', $allStatuses);
+
+		$this->set('shoppingList', $sl);
+	}
+
+	function mobile_updateStatus($id = null, $status = false)
+	{
+		$this->ShoppingList->id = $id;
+		if (!$this->ShoppingList->exists())
+			throw new NotFoundException(__('Invalid shopping list'));
+
+		if ($status)
+			$status = 3;
+		else
+			$status = 1;
+
+		$this->ShoppingList->save(array(
+			'id'=>$id,
+			'status_id'=>$status
+		));
+
+		$this->redirect('/mobile/ShoppingLists/');
 	}
 }

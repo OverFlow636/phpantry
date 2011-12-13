@@ -45,12 +45,14 @@ if (!empty($shoppingList['ShoppingListItem']))
 
 		echo "<td class=style1>".$ir['quantity']."</td>";
 
-		if (isset($item))
+		if (isset($ir['Item']['id']))
+		{
 			if ($item['useUnit'])
 				echo "<td>". $item['Unit']['name']. ' of '. $item['name']. '</td>';
 			else
 				echo "<td>". $item['name']. '</td>';
-		elseif(isset($package))
+		}
+		elseif(isset($ir['Package']['id']))
 			echo "<td>". $package['name']. '</td>';
 		else
 			echo '<td>'.$ir['custom'].'</td>';

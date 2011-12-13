@@ -46,25 +46,25 @@ class ShoppingListItemsController extends AppController {
 				switch ($addType)
 				{
 					case 'Recipe':
+						$this->loadModel('Recipe');
+						$recipe = $this->Recipe->read(null, $addId);
 
+						foreach($recipe['ItemsRecipe'] as $ir)
+							$this->ShoppingListItem->addItemToList($shoppingList, $ir['item_id'], $ir['quantity']);
 					break;
 
 					case 'Item':
-						$this->ShoppingListItem->save(array(
-							'shopping_list_id'	=> $shoppingList,
-							'item_id'			=> $addId,
-							'quantity'			=> $addQuantity
-						));
+						$this->ShoppingListItem->addItemToList($shoppingList, $addId, $addQuantity);
 					break;
 
 					case 'Package':
-						$this->ShoppingListItem->save(array(
-							'shopping_list_id'	=> $shoppingList,
-							'package_id'		=> $addId,
-							'quantity'			=> $addQuantity
-						));
+						$this->ShoppingListItem->addPackageToList($shoppingList, $addId, $addQuantity);
 					break;
 				}
+				$this->ShoppingListItem->ShoppingList->save(array(
+					'id'=>$shoppingList,
+					'status'=>1
+				));
 
 				$this->redirect(array('action'=>'getList', $shoppingList));
 			}
@@ -121,7 +121,7 @@ class ShoppingListItemsController extends AppController {
 		$packages = $this->ShoppingListItem->Package->find('list');
 		$statuses = $this->ShoppingListItem->Status->find('list');
 		$this->set(compact('shoppingLists', 'items', 'packages', 'statuses'));
-		
+
 	}
 
 /**
@@ -222,14 +222,14 @@ class ShoppingListItemsController extends AppController {
 		if ($this->request->is('ajax'))
 			$this->layout = 'ajax';
 	}
-	
+
 	public function updateStatus($id=null, $status='false')
 	{
 		if ($status == 'true')
 			$status = 3;
 		else
 			$status = 1;
-		
+
 		if ($this->request->is('ajax'))
 		{
 			$details = array(
@@ -239,7 +239,7 @@ class ShoppingListItemsController extends AppController {
 
 			$this->ShoppingListItem->save($details);
 			die('success');
-			
+
 		}
 		die('error');
 	}

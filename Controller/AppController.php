@@ -28,7 +28,7 @@ class AppController extends Controller
 
 	public function constructClasses()
 	{
-		if (empty($this->request->params['prefix']) && $this->request->params['pass'][0] != 'mobile')
+		if (empty($this->request->params['prefix']) && !empty($this->request->params['pass'][0]) && $this->request->params['pass'][0] != 'mobile')
 			$this->components[] = 'DebugKit.Toolbar';
 		parent::constructClasses();
 	}
