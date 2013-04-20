@@ -9,8 +9,8 @@
 		echo $this->Html->css('ui-lightness/jquery-ui-1.8.16.custom');
 		echo $scripts_for_layout;
 	?>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -38,9 +38,5 @@
 
 		</div>
     </div>
-
-	<!-- div id="sql_debug" style="display:none">
-		<?php //echo $this->element('sql_dump'); ?>
-	</div -->
 </body>
 </html>

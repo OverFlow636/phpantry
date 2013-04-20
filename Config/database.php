@@ -63,9 +63,9 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'c1_pantry',
-		'password' => 'xxpasswordxx',
-		'database' => 'c1_pantry',
+		'login' => 'root',
+		'password' => '',
+		'database' => 'pantry',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
