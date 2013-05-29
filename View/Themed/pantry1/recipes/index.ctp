@@ -9,12 +9,12 @@
 	</tr>
 
 	<?php
-	foreach($this->data as $item)
+	foreach($recipes as $item)
 	{
 		echo "<tr>";
 		echo "<td class=style1>".$this->Html->link($item['Recipe']['name'], array('action'=>'view', $item['Recipe']['id']))."</td>";
 		echo "<td>".$item['RecipeType']['type']."</td>";
-		echo "<td>".$item['Recipe']['price']."</td>";
+		echo "<td>".(isset($item['Recipe']['price'])?$item['Recipe']['price']:'')."</td>";
 		echo "</tr>";
 	}
 	?>

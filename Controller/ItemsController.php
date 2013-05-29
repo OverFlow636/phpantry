@@ -52,14 +52,6 @@ class ItemsController extends AppController
 		if (!$this->Item->exists())
 			throw new NotFoundException(__('Invalid item'));
 
-		$this->set('recipeTypes', $this->Item->ItemsRecipe->Recipe->RecipeType->find('list'));
-
-		$this->Item->contain(array(
-			'Inventory',
-			'ItemsRecipe.Recipe',
-			'ItemsRecipe.Unit',
-			'Unit'
-		));
 		$this->set('item', $this->Item->read());
 	}
 
@@ -114,8 +106,6 @@ class ItemsController extends AppController
 			if (empty($this->request->data['Item']['upc']))
 				$this->request->data['Item']['upc'] = $upc;
 		}
-
-		$this->set('itemTypes', $this->Item->ItemType->find('list'));
 
 		$units = $this->Item->Unit->find('list');
 		$this->set('units', $units);

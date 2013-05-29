@@ -15,11 +15,23 @@ class AppController extends Controller
 
 	var $components = array(
 		'DebugKit.Toolbar',
-		'Session'
+		'Session',
+		'Auth' => array(
+            'loginRedirect' => array('controller' => 'items', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home'),
+			'authorize' => array('Controller')
+        )
 	);
+	
+	public function isAuthorized($user)
+	{
+		return true;
+	}
 
 	public function beforeFilter()
 	{
+		$this->Auth->allow('index', 'view');
+		
 		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'mobile')
 			$this->theme = 'mobile';
 		else
