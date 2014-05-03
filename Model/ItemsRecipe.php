@@ -4,9 +4,9 @@ class ItemsRecipe extends AppModel
 {
 	var $name = 'ItemsRecipe';
 
-	var $belongsTo = array(
-		'Item',
-		'Recipe',
-		'Unit'
-	);
+  var $belongsTo = array(
+    'Item',
+    'Recipe'
+  );
+
 }

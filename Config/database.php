@@ -65,7 +65,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'pantry',
 		'password' => 'xxpasswordxx',
-		'database' => 'pantry',
+		'database' => 'pantry_new',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

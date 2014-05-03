@@ -2,12 +2,14 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: Joey
- * Date: 8/12/13
- * Time: 1:18 AM
+ * Date: 8/19/13
+ * Time: 10:11 PM
  * To change this template use File | Settings | File Templates.
  */
 
-class InventoriesController extends AppController
+class Brand extends AppModel
 {
-    var $scaffold;
+    var $hasMany = array(
+        'Item'
+    );
 }

@@ -14,7 +14,20 @@ echo "<table class=desc>
 echo $this->Form->input('upc');
 echo "<tr><td colspan=2>".$this->Form->end(array('label'=>'Enter', 'div'=>false, 'class'=>'submit'))."</td></tr>";
 
-echo "</table>";
+echo "</table><br><br>";
+
+echo "<table class=desc>
+<tr><th colspan=2 class=head>Pending Scans</th></tr>";
+
+foreach($pendingUpc as $pend)
+{
+    echo '<tr>
+        <td><a href=# class=scan>'.$pend['Input']['barcode'].'</a></td>
+        <td>'.$pend['Input']['source'].'</td>
+    </tr>
+    ';
+}
+echo '</table>';
 
 ?>
 <script>
@@ -31,6 +44,12 @@ $('document').ready(function(){
 			scanned = true;
 		}
 	});
+
+    $('.scan').on('click', function (e) {
+        $('#ItemUpc').val(e.target.innerHTML);
+        $('#ItemAddForm').submit();
+        scanned = true;
+    })
 });
 
 </script>

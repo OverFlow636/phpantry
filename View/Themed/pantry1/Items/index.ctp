@@ -3,41 +3,16 @@
 </div>
 <table class=listing>
 	<tr>
-		<th><?php echo $this->Paginator->sort('Name', 'name'); ?></th>
-		<th><?php echo $this->Paginator->sort('Piece Price', 'price'); ?></th>
-		<th><?php echo $this->Paginator->sort('Servings/Unit', 'package_quantity'); ?></th>
-		<th>Stock</th>
-		<th><?php echo $this->Paginator->sort('Recipes', 'recipe_count'); ?></th>
+		<th>Brand</th>
+		<th>Name</th>
 	</tr>
 
 	<?php
 	foreach($items as $item)
 	{
-		echo "<tr>";
-
-		if ($item['Item']['useUnit'])
-			$name = $item['Unit']['name'].' of '.$item['Item']['name'];
-		else
-			$name = $item['Item']['name'];
-
-		echo "<td class=style1>".$this->Html->link($name, array('action'=>'view', $item['Item']['id']))."</td>";
-
-		if ($item['Item']['splitPrice'] == 1)
-			echo "<td>".$this->Number->currency($item['Item']['price']/$item['Item']['serving_count'])."</td>";
-		else
-			echo "<td>".$this->Number->currency($item['Item']['price'])."</td>";
-
-		if ($item['Item']['oneUse'])
-			echo "<td>".$this->Plural->ize($item['ServingUnit']['name'], 1)."</td>";
-		else
-			echo "<td>".$this->Plural->ize($item['ServingUnit']['name'],$item['Item']['serving_count'])."</td>";
-
-		if (isset($item['Inventory']['quantity']))
-			echo "<td>".$item['Inventory']['quantity']."</td>";
-		else
-			echo "<td>0</td>";
-
-		echo "<td>".$item['Item']['recipe_count']."</td>";
+		echo "<tr>
+			<td>{$item['Brand']['name']}</td>";
+		echo "<td class=style1>".$this->Html->link($item['Item']['name'], array('action'=>'view', $item['Item']['id']))."</td>";
 		echo "</tr>";
 	}
 	?>

@@ -14,7 +14,11 @@ class ItemsController extends AppController
 			array(
 				'title'=>'Packages',
 				'array'=>array('controller'=>'Packages', 'action'=>'index'),
-				'main'=>true
+				'main'=>TRUE
+			),array(
+				'title'=>'Units',
+				'array'=>array('controller'=>'Units', 'action'=>'index'),
+				'main'=>TRUE
 			),array(
 				'title'=>'Item List',
 				'array'=>array('action'=>'index')
@@ -22,10 +26,6 @@ class ItemsController extends AppController
 			array(
 				'title'=>'New Item',
 				'array'=>array('action'=>'add')
-			),
-			array(
-				'title'=>'Import',
-				'array'=>array('action'=>'import')
 			)
 		)
 	);
@@ -52,7 +52,19 @@ class ItemsController extends AppController
 		if (!$this->Item->exists())
 			throw new NotFoundException(__('Invalid item'));
 
-		$this->set('item', $this->Item->read());
+		$this->Item->contain(array(
+			'Unit',
+		    'Brand',
+		    'Category',
+		    'Allocation.Unit',
+		    'Allocation.Package',
+		    'ItemServing.Serving.Unit',
+		    'ItemServing.ItemServingNutrient.Nutrient'
+		));
+
+        $item = $this->Item->read();
+		$this->set('item', $item);
+        $this->set('_serialize', array('item'));
 	}
 
 	/**
@@ -61,9 +73,9 @@ class ItemsController extends AppController
 	 *
 	 * @param type $upc UPC of an item to lookup and add
 	 */
-	function add($upc=null)
+	function add($upc=NULL)
 	{
-		if ($upc==null)
+		if ($upc==NULL)
 		{
 			if ($this->request->is('post'))
 			{
@@ -71,21 +83,53 @@ class ItemsController extends AppController
 				{
 					$upc = str_pad(ltrim($this->request->data['Item']['upc'],'0'), 12, '0', STR_PAD_LEFT);
 
-					$exists = $this->Item->findByUpc($upc);
+					$exists = $this->Item->Allocation->findByUpc($upc);
 					if ($exists)
-						$this->redirect(array('action'=>'edit', $exists['Item']['id']));
+						$this->redirect(array('controller'=>'allocations','action'=>'edit', $exists['Allocation']['id']));
 					else
 						$this->request->data = array('Item'=>$this->lookup($upc));
+
+                    $_SESSION['scan'] = $this->request->data;
+
+
+					$exists = empty($this->request->data['Item']['name'])?FALSE:$this->Item->findByUpcdatabaseName($this->request->data['Item']['name']);
+					if ($exists)
+					{
+						//new allocation for existing item
+						$this->redirect(array('controller'=>'Allocations', 'action'=>'addToItem', $exists['Item']['id'], $this->request->data['Item']['upc'], $this->request->data['Item']['size']));
+					}
+					else
+					{
+						//new item and new allocation
+                        $brands = $this->Item->Brand->find('list');
+                        $brands[0] = 'New Brand';
+                        $this->set('brands', $brands);
+
+                        $this->set('units', $this->Item->Unit->find('list'));
+                        $this->set('categories', $this->Item->Category->find('list'));
+                        //$this->set('SubCategories', $this->Item->Subcategory->find('list'));
+                        $this->render('add');
+					}
 				}
 				elseif (isset($this->request->data['Item']['name']))
 				{
 					$this->Session->setFlash('Successfully added new item.', 'notice_success');
 					$this->Item->save($this->request->data);
-					$this->redirect(array('action'=>'view', $this->Item->getLastInsertID()));
+					//$this->redirect(array('action'=>'view', $this->Item->getLastInsertID()));
+
+                    $this->loadModel('Input');
+                    $this->Input->deleteAll(array('barcode'=>$_SESSION['scan']['Item']['upc']));
+
+                    $this->redirect(array('controller'=>'Allocations', 'action'=>'addToItem', $this->Item->getLastInsertID(), $_SESSION['scan']['Item']['upc'], $_SESSION['scan']['Item']['size']));
 				}
 			}
 			else
-				$this->render('scanupc');
+            {
+                $this->loadModel('Input');
+                $this->set('pendingUpc', $this->Input->find('all'));
+                $this->render('scanupc');
+            }
+
 		}
 		else
 		{
@@ -109,7 +153,6 @@ class ItemsController extends AppController
 
 		$units = $this->Item->Unit->find('list');
 		$this->set('units', $units);
-		$this->set('servingUnits', $units);
 	}
 
 	/**
@@ -117,7 +160,7 @@ class ItemsController extends AppController
 	 *
 	 * @param type $id
 	 */
-	function edit($id=null)
+	function edit($id=NULL)
 	{
 		$this->Item->id = $id;
 		if (!$this->Item->exists())
@@ -131,23 +174,22 @@ class ItemsController extends AppController
 		}
 		else
 		{
-			$this->request->data = $this->Item->read(null, $id);
+			$this->request->data = $this->Item->read(NULL, $id);
 
-			$this->data = $this->Item->read(null, $id);
-			$this->set('itemTypes', $this->Item->ItemType->find('list'));
-
-			$units = $this->Item->Unit->find('list');
-			$this->set('units', $units);
-			$this->set('servingUnits', $units);
+            $this->set('brands', $this->Item->Brand->find('list'));
+            $this->set('units', $this->Item->Unit->find('list'));
+            $this->set('categories', $this->Item->Category->find('list'));
 		}
 	}
 
-	/**
-	 * Delete an item.
-	 *
-	 * @param type $id
-	 */
-	public function delete($id = null)
+    /**
+     * Delete an item.
+     *
+     * @param type $id
+     * @throws NotFoundException
+     * @throws MethodNotAllowedException
+     */
+	public function delete($id = NULL)
 	{
 		if (!$this->request->is('get'))
 			throw new MethodNotAllowedException();
@@ -163,7 +205,11 @@ class ItemsController extends AppController
 		}
 		$this->Session->setFlash('Item was not deleted', 'notice_error');
 		$this->redirect(array('action' => 'index'));
-	}
+
+
+
+
+    }
 
 
 
@@ -222,14 +268,14 @@ class ItemsController extends AppController
 		$this->Curl->execute();
 
 		if (strpos($this->Curl->output, 'overflow636') > 0)
-			return true;
+			return TRUE;
 
 		$token = $this->Curl->grabInside('<input name="authenticity_token" type="hidden" value="', '" />');
 
 		$this->loadModel('Curl');
 		$this->Curl->start();
 		$this->Curl->url = 'http://www.myfitnesspal.com/account/login';
-		$this->Curl->post = true;
+		$this->Curl->post = TRUE;
 		$this->Curl->postFields = array(
 			'authenticity_token'	=> $token,
 			'username'				=> '',
@@ -250,7 +296,7 @@ class ItemsController extends AppController
 			$this->loadModel('Curl');
 			$this->Curl->start();
 			$this->Curl->url = 'http://www.myfitnesspal.com/food/calorie-chart-nutrition-facts';
-			$this->Curl->post = true;
+			$this->Curl->post = TRUE;
 			$this->Curl->postFields = array(
 				'search'	=> $name
 			);
