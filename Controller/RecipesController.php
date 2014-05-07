@@ -3,8 +3,6 @@
 class RecipesController extends AppController
 {
 	var $name = "Recipes";
-  var $scaffold;
-
 
   public function addItem($id)
   {
@@ -23,5 +21,9 @@ class RecipesController extends AppController
       $this->set('units', $this->Recipe->Item->Unit->find('list'));
 
     }
+  }
+
+  public function index() {
+    $this->set('recipes', $this->Recipe->find('all'));
   }
 }

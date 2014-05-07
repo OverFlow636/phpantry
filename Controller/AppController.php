@@ -5,44 +5,30 @@ App::uses('Controller', 'Controller');
  * AppController sets the defaults for all other controllers.
  *
  */
-class AppController extends Controller
-{
-	var $viewClass = 'Theme';
+class AppController extends Controller {
+  var $viewClass = 'Theme';
+  var $theme = 'AdminLTE';
 
-	var $helpers = array(
-		'Html', 'Form', 'Session', 'Plural', 'Number', 'Paginator'
-	);
+  var $helpers = array(
+    'Html', 'Form', 'Session', 'Plural', 'Number', 'Paginator'
+  );
 
-	var $components = array(
-		'DebugKit.Toolbar',
-		'Session',
-        'RequestHandler',
-		'Auth' => array(
-            'loginRedirect' => array('controller' => 'items', 'action' => 'index'),
-            'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home'),
-			'authorize' => array('Controller')
-        )
-	);
-	
-	public function isAuthorized($user)
-	{
-		return true;
-	}
+  var $components = array(
+    'DebugKit.Toolbar',
+    'Session',
+    'RequestHandler',
+    'Auth' => array(
+      'loginRedirect'   => array('controller' => 'items', 'action' => 'index'),
+      'logoutRedirect'  => array('controller' => 'pages', 'action' => 'display', 'home'),
+      'authorize'       => array('Controller')
+    )
+  );
 
-	public function beforeFilter()
-	{
-		$this->Auth->allow('index', 'view', 'bst');
-		
-		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'mobile')
-			$this->theme = 'mobile';
-		else
-			$this->theme = 'pantry1';
-	}
+  public function isAuthorized($user) {
+    return true;
+  }
 
-	public function constructClasses()
-	{
-		if (empty($this->request->params['prefix']) && !empty($this->request->params['pass'][0]) && $this->request->params['pass'][0] != 'mobile')
-			$this->components[] = 'DebugKit.Toolbar';
-		parent::constructClasses();
-	}
+  public function beforeFilter() {
+    $this->Auth->allow('index', 'view', 'bst');
+  }
 }
